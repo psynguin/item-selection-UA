@@ -19,6 +19,23 @@ ui <- dashboardPage(
     ),
     dashboardBody(
         useShinyjs(),
+        # Agregamos los meta tags para controlar el caché dentro del dashboardBody
+        tags$head(
+            tags$meta(httpEquiv = "Cache-Control", content = "no-cache, no-store, must-revalidate"),
+            tags$meta(httpEquiv = "Pragma", content = "no-cache"),
+            tags$meta(httpEquiv = "Expires", content = "0"),
+            # Script para forzar recarga si se detecta una nueva versión
+            tags$script(HTML(paste0("
+                const appVersion = '", format(Sys.time(), "%Y%m%d%H%M%S"), "';
+                const lastVersion = localStorage.getItem('appVersion');
+                if (lastVersion && lastVersion !== appVersion) {
+                  localStorage.setItem('appVersion', appVersion);
+                  location.reload(true);
+                } else {
+                  localStorage.setItem('appVersion', appVersion);
+                }
+              ")))
+        ),
         tabItems(
             # Tab para gestionar ítems existentes
             tabItem(
